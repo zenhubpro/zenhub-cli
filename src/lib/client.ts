@@ -48,6 +48,15 @@ export class ZenHubClient {
     }
 
     const res = await fetch(url.toString(), options);
+    const contentType = res.headers.get('content-type') || '';
+
+    if (!contentType.includes('application/json')) {
+      return {
+        success: false,
+        error: `HTTP ${res.status} — unexpected response (${contentType || 'no content-type'})`,
+      };
+    }
+
     const json = await res.json() as any;
 
     if (!res.ok) {

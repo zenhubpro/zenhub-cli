@@ -11,13 +11,13 @@ export function registerContacts(program: Command, client: ZenHubClient) {
     .option('-q, --query <search>', 'Search by name, email, or phone')
     .option('-t, --tag <tag>', 'Filter by tag')
     .option('-p, --page <number>', 'Page number', '1')
-    .option('-l, --limit <number>', 'Results per page', '20')
+    .option('-l, --per-page <number>', 'Results per page', '20')
     .action(async (opts) => {
       const res = await client.get('/v1/contacts', {
         search: opts.query,
         tag: opts.tag,
         page: opts.page,
-        limit: opts.limit,
+        per_page: opts.perPage,
       });
       if (!res.success) return outputError(res.error!);
       output(res.data);

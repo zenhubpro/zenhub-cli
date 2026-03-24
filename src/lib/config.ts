@@ -5,7 +5,7 @@ export interface CliConfig {
 
 export function loadConfig(): CliConfig {
   const apiKey = process.env.ZENHUB_API_KEY;
-  const apiUrl = process.env.ZENHUB_API_URL || 'https://api.zenhub.pro';
+  const apiUrl = process.env.ZENHUB_API_URL || 'https://api.zenhub.pro/api';
 
   if (!apiKey) {
     console.error(

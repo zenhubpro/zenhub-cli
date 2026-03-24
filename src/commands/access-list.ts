@@ -9,9 +9,9 @@ export function registerAccessList(program: Command, client: ZenHubClient) {
     .command('list <campaignId>')
     .description('List access list entries for a campaign')
     .option('-p, --page <number>', 'Page number', '1')
-    .option('-l, --limit <number>', 'Results per page', '20')
+    .option('-l, --per-page <number>', 'Results per page', '20')
     .action(async (campaignId, opts) => {
-      const res = await client.get(`/v1/access-list/${campaignId}`, { page: opts.page, limit: opts.limit });
+      const res = await client.get(`/v1/access-list/${campaignId}`, { page: opts.page, per_page: opts.perPage });
       if (!res.success) return outputError(res.error!);
       output(res.data);
     });

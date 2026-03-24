@@ -11,13 +11,13 @@ export function registerConversations(program: Command, client: ZenHubClient) {
     .option('-s, --status <status>', 'Filter by status (open, pending, resolved, snoozed)')
     .option('-a, --assignee <id>', 'Filter by assignee ID')
     .option('-p, --page <number>', 'Page number', '1')
-    .option('-l, --limit <number>', 'Results per page', '20')
+    .option('-l, --per-page <number>', 'Results per page', '20')
     .action(async (opts) => {
       const res = await client.get('/v1/conversations', {
         status: opts.status,
         assignee_id: opts.assignee,
         page: opts.page,
-        limit: opts.limit,
+        per_page: opts.perPage,
       });
       if (!res.success) return outputError(res.error!);
       output(res.data);
@@ -36,11 +36,11 @@ export function registerConversations(program: Command, client: ZenHubClient) {
     .command('messages <id>')
     .description('List messages in a conversation')
     .option('--cursor <cursor>', 'Pagination cursor')
-    .option('-l, --limit <number>', 'Results per page', '20')
+    .option('-l, --per-page <number>', 'Results per page', '20')
     .action(async (id, opts) => {
       const res = await client.get(`/v1/conversations/${id}/messages`, {
         cursor: opts.cursor,
-        limit: opts.limit,
+        per_page: opts.perPage,
       });
       if (!res.success) return outputError(res.error!);
       output(res.data);

@@ -9,9 +9,9 @@ export function registerCampaigns(program: Command, client: ZenHubClient) {
     .command('list')
     .description('List all campaigns')
     .option('-p, --page <number>', 'Page number', '1')
-    .option('-l, --limit <number>', 'Results per page', '20')
+    .option('-l, --per-page <number>', 'Results per page', '20')
     .action(async (opts) => {
-      const res = await client.get('/v1/campaigns', { page: opts.page, limit: opts.limit });
+      const res = await client.get('/v1/campaigns', { page: opts.page, per_page: opts.perPage });
       if (!res.success) return outputError(res.error!);
       output(res.data);
     });

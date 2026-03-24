@@ -4,7 +4,7 @@ import { Command } from 'commander';
 import { loadConfig } from './lib/config';
 import { ZenHubClient } from './lib/client';
 import { setJsonMode } from './lib/output';
-
+import { registerAuth } from './commands/auth';
 import { registerCampaigns } from './commands/campaigns';
 import { registerGroups } from './commands/groups';
 import { registerSchedules } from './commands/schedules';
@@ -28,6 +28,9 @@ program
     if (opts.json) setJsonMode(true);
   });
 
+// Auth commands (don't need API client)
+registerAuth(program);
+
 // Initialize client (deferred — only when a command actually runs)
 let _client: ZenHubClient | null = null;
 function getClient(): ZenHubClient {
@@ -38,13 +41,14 @@ function getClient(): ZenHubClient {
   return _client;
 }
 
-// Register all command groups
+// Lazy proxy — client only initializes when first API command runs
 const client = new Proxy({} as ZenHubClient, {
   get(_, prop) {
     return (getClient() as any)[prop].bind(getClient());
   },
 });
 
+// Register API command groups
 registerCampaigns(program, client);
 registerGroups(program, client);
 registerSchedules(program, client);

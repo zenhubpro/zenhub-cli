@@ -80,4 +80,57 @@ export function registerGroups(program: Command, client: ZenHubClient) {
       if (!res.success) return outputError(res.error!);
       outputSuccess('Member sync started', res.data);
     });
+
+  // --- Group management convenience commands ---
+  // These create immediate schedules via the schedules API
+
+  cmd
+    .command('rename <campaignId> <groupId>')
+    .description('Rename a group (creates an immediate schedule with execution_type=change_name)')
+    .requiredOption('-n, --name <name>', 'New group name')
+    .action(async (campaignId, groupId, opts) => {
+      const body = {
+        name: `Rename group to "${opts.name}"`,
+        execution_type: 'change_name',
+        scheduled_date: new Date().toISOString(),
+        group_ids: [groupId],
+        new_group_name: opts.name,
+        execute_now: true,
+      };
+      const res = await client.post(`/v1/campaigns/${campaignId}/schedules`, body);
+      if (!res.success) return outputError(res.error!);
+      outputSuccess(`Group rename to "${opts.name}" scheduled`, res.data);
+    });
+
+  cmd
+    .command('lock <campaignId> <groupId>')
+    .description('Lock a group (only admins can send messages)')
+    .action(async (campaignId, groupId) => {
+      const body = {
+        name: 'Lock group',
+        execution_type: 'lock_group',
+        scheduled_date: new Date().toISOString(),
+        group_ids: [groupId],
+        execute_now: true,
+      };
+      const res = await client.post(`/v1/campaigns/${campaignId}/schedules`, body);
+      if (!res.success) return outputError(res.error!);
+      outputSuccess('Group lock scheduled', res.data);
+    });
+
+  cmd
+    .command('unlock <campaignId> <groupId>')
+    .description('Unlock a group (all members can send messages)')
+    .action(async (campaignId, groupId) => {
+      const body = {
+        name: 'Unlock group',
+        execution_type: 'unlock_group',
+        scheduled_date: new Date().toISOString(),
+        group_ids: [groupId],
+        execute_now: true,
+      };
+      const res = await client.post(`/v1/campaigns/${campaignId}/schedules`, body);
+      if (!res.success) return outputError(res.error!);
+      outputSuccess('Group unlock scheduled', res.data);
+    });
 }

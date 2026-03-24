@@ -4,7 +4,8 @@
   "description": "CLI agent-native para ZenHub — automatize campanhas, grupos, agendamentos e ZenChat via terminal ou IA",
   "bin": {
     "zenhub": "./dist/index.js",
-    "zenhub-cli": "./dist/index.js"
+    "zenhub-cli": "./dist/index.js",
+    "zenhub-mcp": "./dist/mcp/index.js"
   },
   "main": "dist/index.js",
   "scripts": {
@@ -27,6 +28,7 @@
   "author": "ZenHub <contato@zenhub.pro>",
   "license": "MIT",
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
     "commander": "^13.0.0",
     "node-fetch": "^3.3.2"
   },

@@ -4,12 +4,12 @@ import {
   saveCredentials,
   loadCredentials,
   clearCredentials,
-  openBrowser,
+  prompt,
   promptSecret,
+  promptSelect,
 } from '../lib/auth';
 import { isJsonMode, output } from '../lib/output';
 
-const SETTINGS_URL = 'https://www.zenhub.pro/settings/integrations';
 const API_URL = 'https://api.zenhub.pro/api';
 
 export function registerAuth(program: Command) {
@@ -21,58 +21,120 @@ export function registerAuth(program: Command) {
       const apiUrl = opts.apiUrl || API_URL;
 
       console.log('');
-      console.log('  ZenHub CLI — Login');
+      console.log('  \x1b[1mZenHub CLI\x1b[0m — Login');
       console.log('  ─────────────────');
       console.log('');
-      console.log('  Opening your browser to generate an API key...');
-      console.log(`  If it doesn't open, go to: ${SETTINGS_URL}`);
-      console.log('');
 
-      openBrowser(SETTINGS_URL);
+      // Step 1: Email + Password
+      const email = await prompt('  Email: ');
+      const password = await promptSecret('  Password: ');
 
-      const apiKey = await promptSecret('  Paste your API key: ');
-
-      if (!apiKey || !apiKey.startsWith('agwpp_live_')) {
-        console.error('\n  Invalid API key. It should start with "agwpp_live_"');
+      if (!email || !password) {
+        console.error('\n  Email and password are required.');
         process.exit(1);
       }
 
-      // Validate the key
-      console.log('\n  Validating...');
-      const client = new ZenHubClient({ apiKey, apiUrl });
-      const res = await client.get('/v1/connections');
+      // Step 2: Authenticate
+      console.log('\n  Authenticating...');
 
-      if (!res.success) {
-        console.error(`\n  Authentication failed: ${res.error}`);
-        console.error('  Check your API key and try again.');
+      const res = await fetch(`${apiUrl}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json() as any;
+
+      if (!res.ok || !data.token) {
+        console.error(`\n  \x1b[31m✗ Login failed: ${data.message || 'Invalid credentials'}\x1b[0m`);
         process.exit(1);
       }
 
-      // Try to get org info from campaigns endpoint
-      let orgName: string | undefined;
-      let ownerEmail: string | undefined;
-      try {
-        const orgRes = await client.get('/v1/campaigns', { per_page: 1 });
-        if (orgRes.data?.[0]?.organization_id) {
-          orgName = orgRes.data[0].organization_name;
+      const jwt = data.token;
+      const user = data.user;
+      const organizations = data.organizations as { id: string; name: string; role: string }[];
+
+      console.log(`  \x1b[32m✓\x1b[0m Welcome, ${user.name || user.email}!`);
+
+      // Step 3: Select organization
+      let selectedOrg: { id: string; name: string; role: string };
+
+      if (organizations.length === 0) {
+        console.error('\n  \x1b[31m✗ No organizations found for this account.\x1b[0m');
+        process.exit(1);
+      } else if (organizations.length === 1) {
+        selectedOrg = organizations[0];
+        console.log(`  Organization: ${selectedOrg.name}`);
+      } else {
+        console.log('');
+        console.log('  Select an organization:');
+        console.log('');
+        organizations.forEach((org, i) => {
+          const role = org.role === 'owner' ? ' (owner)' : '';
+          console.log(`    ${i + 1}. ${org.name}${role}`);
+        });
+        console.log('');
+
+        const choice = await prompt(`  Choice [1-${organizations.length}]: `);
+        const idx = parseInt(choice) - 1;
+
+        if (isNaN(idx) || idx < 0 || idx >= organizations.length) {
+          console.error('\n  Invalid selection.');
+          process.exit(1);
         }
-      } catch {
-        // Not critical
+
+        selectedOrg = organizations[idx];
       }
 
+      // Step 4: Create API key automatically
+      console.log('\n  Setting up CLI access...');
+
+      const keyRes = await fetch(`${apiUrl}/api-keys`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwt}`,
+          'X-Organization-Id': selectedOrg.id,
+        },
+        body: JSON.stringify({
+          name: 'ZenHub CLI',
+          scopes: ['read', 'write'],
+        }),
+      });
+
+      const keyData = await keyRes.json() as any;
+
+      if (!keyRes.ok || !keyData.api_key) {
+        // If key creation fails, try to find existing CLI key
+        console.warn('  Could not create API key automatically.');
+        console.error(`  Error: ${keyData.message || 'Unknown error'}`);
+        process.exit(1);
+      }
+
+      const apiKey = keyData.api_key;
+
+      // Step 5: Save credentials
       saveCredentials({
         api_key: apiKey,
         api_url: apiUrl,
-        organization_name: orgName,
-        owner_email: ownerEmail,
+        user_id: user.id,
+        user_email: user.email,
+        user_name: user.name,
+        organization_id: selectedOrg.id,
+        organization_name: selectedOrg.name,
         logged_in_at: new Date().toISOString(),
       });
 
       console.log('');
-      console.log('  ✓ Logged in successfully!');
-      if (orgName) console.log(`  Organization: ${orgName}`);
+      console.log('  \x1b[32m✓ Logged in successfully!\x1b[0m');
       console.log('');
-      console.log('  Try: zenhub campaigns list');
+      console.log(`  Account:      ${user.email}`);
+      console.log(`  Organization: ${selectedOrg.name}`);
+      console.log('');
+      console.log('  Get started:');
+      console.log('    $ zenhub campaigns list');
+      console.log('    $ zenhub chat list --status open');
+      console.log('    $ zenhub connections list');
       console.log('');
     });
 
@@ -85,7 +147,7 @@ export function registerAuth(program: Command) {
         output({ success: true, message: 'Logged out' });
       } else {
         console.log('');
-        console.log('  ✓ Logged out. Credentials removed.');
+        console.log('  \x1b[32m✓\x1b[0m Logged out. Credentials removed.');
         console.log('');
       }
     });
@@ -103,7 +165,7 @@ export function registerAuth(program: Command) {
             output({ authenticated: true, method: 'environment_variable' });
           } else {
             console.log('');
-            console.log('  ✓ Authenticated via ZENHUB_API_KEY environment variable');
+            console.log('  \x1b[32m✓\x1b[0m Authenticated via ZENHUB_API_KEY environment variable');
             console.log('');
           }
         } else {
@@ -111,7 +173,7 @@ export function registerAuth(program: Command) {
             output({ authenticated: false });
           } else {
             console.log('');
-            console.log('  ✗ Not logged in.');
+            console.log('  \x1b[31m✗\x1b[0m Not logged in.');
             console.log('  Run: zenhub login');
             console.log('');
           }
@@ -127,25 +189,47 @@ export function registerAuth(program: Command) {
         output({
           authenticated: res.success,
           method: 'credentials_file',
+          user_email: creds.user_email,
+          user_name: creds.user_name,
           organization_name: creds.organization_name,
+          organization_id: creds.organization_id,
           api_url: creds.api_url,
           logged_in_at: creds.logged_in_at,
-          api_key_preview: `${creds.api_key.substring(0, 15)}...${creds.api_key.slice(-4)}`,
         });
       } else {
         console.log('');
         if (res.success) {
-          console.log('  ✓ Authenticated');
+          console.log('  \x1b[32m✓\x1b[0m Authenticated');
         } else {
-          console.log('  ✗ API key is invalid or expired');
+          console.log('  \x1b[31m✗\x1b[0m Session expired or invalid');
+          console.log('  Run: zenhub login');
+        }
+        if (creds.user_name || creds.user_email) {
+          console.log(`  Account:      ${creds.user_name || ''} <${creds.user_email || ''}>`);
         }
         if (creds.organization_name) {
           console.log(`  Organization: ${creds.organization_name}`);
         }
-        console.log(`  API Key: ${creds.api_key.substring(0, 15)}...${creds.api_key.slice(-4)}`);
-        console.log(`  API URL: ${creds.api_url}`);
-        console.log(`  Logged in: ${new Date(creds.logged_in_at).toLocaleString()}`);
+        console.log(`  Logged in:    ${new Date(creds.logged_in_at).toLocaleString()}`);
         console.log('');
       }
+    });
+
+  program
+    .command('switch')
+    .description('Switch to a different organization')
+    .action(async () => {
+      const creds = loadCredentials();
+      if (!creds) {
+        console.error('\n  Not logged in. Run: zenhub login\n');
+        process.exit(1);
+      }
+
+      console.log('');
+      console.log('  To switch organizations, log in again:');
+      console.log('  $ zenhub login');
+      console.log('');
+      console.log('  This will let you select a different organization.');
+      console.log('');
     });
 }

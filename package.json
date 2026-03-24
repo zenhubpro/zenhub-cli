@@ -1,0 +1,40 @@
+{
+  "name": "zenhub-cli",
+  "version": "0.1.0",
+  "description": "CLI agent-native para ZenHub — automatize campanhas, grupos, agendamentos e ZenChat via terminal ou IA",
+  "bin": {
+    "zenhub": "./dist/index.js",
+    "zenhub-cli": "./dist/index.js"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "start": "node dist/index.js",
+    "lint": "eslint src/",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "zenhub",
+    "whatsapp",
+    "cli",
+    "automation",
+    "ai",
+    "agent",
+    "campaigns",
+    "zenchat"
+  ],
+  "author": "ZenHub <contato@zenhub.pro>",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^13.0.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

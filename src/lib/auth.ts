@@ -111,6 +111,21 @@ export function promptSecret(question: string): Promise<string> {
   });
 }
 
+export function openBrowser(url: string) {
+  const { execSync } = require('child_process');
+  try {
+    if (process.platform === 'darwin') {
+      execSync(`open "${url}"`);
+    } else if (process.platform === 'win32') {
+      execSync(`start "" "${url}"`);
+    } else {
+      execSync(`xdg-open "${url}"`);
+    }
+  } catch {
+    // Silent fail — URL is printed to terminal
+  }
+}
+
 export function promptSelect(question: string, options: string[]): Promise<number> {
   return prompt(question).then((answer) => {
     const idx = parseInt(answer) - 1;

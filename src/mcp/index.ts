@@ -249,12 +249,16 @@ server.tool(
 
 server.tool(
   'messages_send',
-  'Send a message to a WhatsApp group',
+  'Send a message to a WhatsApp group. Requires connection_id, to (group JID), and type.',
   {
-    group_id: z.string().describe('Group JID or group ID'),
-    message: z.string().describe('Message content'),
-    media_url: z.string().optional().describe('Media URL to attach'),
-    connection_id: z.string().optional().describe('Connection ID to use'),
+    connection_id: z.string().describe('Connection/instance UUID (required)'),
+    to: z.string().describe('Destination group JID, e.g. 120363...@g.us'),
+    type: z.enum(['text', 'image', 'video', 'audio', 'document', 'poll']).describe('Message type'),
+    message: z.string().optional().describe('Text content (required for type=text)'),
+    media_url: z.string().optional().describe('Media URL (required for image/video/audio/document)'),
+    media_filename: z.string().optional().describe('Media filename'),
+    media_mimetype: z.string().optional().describe('Media MIME type'),
+    mention_all: z.boolean().optional().describe('Mention all participants'),
   },
   async (args) => {
     const body = Object.fromEntries(Object.entries(args).filter(([, v]) => v !== undefined));
@@ -264,11 +268,15 @@ server.tool(
 
 server.tool(
   'messages_send_to_campaigns',
-  'Send a message to all groups of one or more campaigns',
+  'Send a message to all groups of one or more campaigns. Requires campaign_ids and type.',
   {
-    campaign_ids: z.array(z.string()).describe('Campaign IDs'),
-    message: z.string().describe('Message content'),
-    media_url: z.string().optional().describe('Media URL to attach'),
+    campaign_ids: z.array(z.string()).describe('Campaign UUIDs (at least one)'),
+    type: z.enum(['text', 'image', 'video', 'audio', 'document', 'poll']).describe('Message type'),
+    message: z.string().optional().describe('Text content (required for type=text)'),
+    media_url: z.string().optional().describe('Media URL (required for image/video/audio/document)'),
+    media_filename: z.string().optional().describe('Media filename'),
+    media_mimetype: z.string().optional().describe('Media MIME type'),
+    mention_all: z.boolean().optional().describe('Mention all participants'),
   },
   async (args) => {
     const body = Object.fromEntries(Object.entries(args).filter(([, v]) => v !== undefined));
@@ -278,15 +286,21 @@ server.tool(
 
 server.tool(
   'messages_bulk',
-  'Send bulk messages to multiple groups',
+  'Send bulk messages to multiple groups. Requires connection_id, recipients array, and type.',
   {
-    message: z.string().describe('Message content'),
-    group_ids: z.array(z.string()).describe('Group IDs'),
+    connection_id: z.string().describe('Connection/instance UUID (required)'),
+    recipients: z.array(z.object({
+      to: z.string().describe('Group JID'),
+      message: z.string().optional().describe('Custom message for this group'),
+    })).describe('List of recipients with group JID and optional custom message'),
+    default_message: z.string().optional().describe('Default message for all groups'),
+    type: z.enum(['text', 'image', 'video', 'audio', 'document', 'poll']).describe('Message type'),
+    media_url: z.string().optional().describe('Media URL'),
+    media_filename: z.string().optional().describe('Media filename'),
     delay_ms: z.number().optional().describe('Delay between messages in ms (default 1000)'),
   },
   async (args) => {
-    const body: any = { message: args.message, group_ids: args.group_ids };
-    if (args.delay_ms !== undefined) body.delay_ms = args.delay_ms;
+    const body = Object.fromEntries(Object.entries(args).filter(([, v]) => v !== undefined));
     return wrap(() => getClient().post('/v1/messages/bulk', body));
   },
 );

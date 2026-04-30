@@ -1,0 +1,13 @@
+{
+  "name": "@zenhub/client",
+  "version": "0.1.0",
+  "description": "ZenHub HTTP client + auth (shared by CLI and MCP)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint src/"
+  },
+  "license": "MIT"
+}

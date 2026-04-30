@@ -1,38 +1,20 @@
 {
-  "name": "zenhub-cli",
-  "version": "0.1.0",
-  "description": "CLI agent-native para ZenHub — automatize campanhas, grupos, agendamentos e ZenChat via terminal ou IA",
-  "bin": {
-    "zenhub": "./dist/index.js",
-    "zenhub-cli": "./dist/index.js",
-    "zenhub-mcp": "./dist/mcp/index.js"
-  },
-  "main": "dist/index.js",
-  "scripts": {
-    "build": "tsc",
-    "dev": "ts-node src/index.ts",
-    "start": "node dist/index.js",
-    "lint": "eslint src/",
-    "prepublishOnly": "npm run build"
-  },
-  "keywords": [
-    "zenhub",
-    "whatsapp",
-    "cli",
-    "automation",
-    "ai",
-    "agent",
-    "campaigns",
-    "zenchat"
+  "name": "zenhub-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "description": "ZenHub CLI + MCP monorepo",
+  "workspaces": [
+    "packages/*"
   ],
-  "author": "ZenHub <contato@zenhub.pro>",
-  "license": "MIT",
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.27.1",
-    "commander": "^13.0.0",
-    "node-fetch": "^3.3.2"
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "tsc -b --clean",
+    "lint": "npm run lint --workspaces --if-present",
+    "gen:openapi": "npm run gen --workspace @zenhub/tools",
+    "release": "changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.0",
     "@types/node": "^22.0.0",
     "typescript": "^5.8.0"
   },

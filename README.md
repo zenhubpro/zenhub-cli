@@ -4,6 +4,17 @@ A command-line interface for the [ZenHub](https://www.zenhub.pro) platform. Mana
 
 Built for humans and machines. Every command supports `--json` output for seamless integration with AI coding assistants (Claude Code, Codex, Copilot, OpenClaw) and shell scripts.
 
+This repo is a **monorepo** (npm workspaces):
+
+| Package | Purpose | Bin |
+|---|---|---|
+| [`zenhub-cli`](packages/cli) | Terminal CLI (Commander) | `zenhub`, `zenhub-cli` |
+| [`zenhub-mcp`](packages/mcp-stdio) | MCP server (stdio) for Claude Desktop, Codex, Cursor, Copilot | `zenhub-mcp` |
+| [`@zenhub/tools`](packages/tools) | Tool definitions (Zod) shared by CLI + MCP | — |
+| [`@zenhub/client`](packages/client) | HTTP client + auth helpers | — |
+
+See [packages/mcp-stdio/README.md](packages/mcp-stdio/README.md) for MCP setup snippets per client.
+
 ## Overview
 
 ```
@@ -51,7 +62,7 @@ npm install -g zenhub-cli
 ### From source
 
 ```bash
-git clone https://github.com/zenhub-pro/zenhub-cli.git
+git clone https://github.com/zenhubpro/zenhub-cli.git
 cd zenhub-cli
 npm install
 npm run build
@@ -404,7 +415,7 @@ This file contains your API key, user info, and selected organization. Run `zenh
 
 ```bash
 # Clone the repo
-git clone https://github.com/zenhub-pro/zenhub-cli.git
+git clone https://github.com/zenhubpro/zenhub-cli.git
 cd zenhub-cli
 
 # Install dependencies

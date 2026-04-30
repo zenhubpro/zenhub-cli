@@ -1,0 +1,367 @@
+[
+  {
+    "method": "POST",
+    "path": "/v1/messages/send",
+    "summary": "Enviar mensagem para um grupo"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/messages/send-to-campaigns",
+    "summary": "Enviar mensagem para multiplas campanhas"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/messages/bulk",
+    "summary": "Envio de mensagens em massa"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/campaigns",
+    "summary": "Criar campanha"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/campaigns",
+    "summary": "Listar campanhas"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/campaigns/:id",
+    "summary": "Obter campanha por ID"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/campaigns/:id",
+    "summary": "Atualizar campanha"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/campaigns/:id",
+    "summary": "Deletar campanha"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/campaigns/:id/stats",
+    "summary": "Obter estatisticas da campanha"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/campaigns/:id/execute",
+    "summary": "Executar campanha imediatamente"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/campaigns/:id/groups",
+    "summary": "Listar grupos da campanha"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/campaigns/:id/groups",
+    "summary": "Criar novo grupo na campanha"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/campaigns/:id/groups/:gid",
+    "summary": "Remover grupo da campanha"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/campaigns/:id/groups/import",
+    "summary": "Importar grupos existentes para campanha"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/campaigns/:id/sync-members",
+    "summary": "Sincronizar membros de todos os grupos da campanha"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/campaigns/:id/groups/:gid/members",
+    "summary": "Listar membros do grupo"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/campaigns/:id/groups/:gid/members",
+    "summary": "Adicionar membros ao grupo"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/campaigns/:id/groups/:gid/members/:phone",
+    "summary": "Remover membro do grupo"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/campaigns/:id/members",
+    "summary": "Listar todos os membros da campanha"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/campaigns/:id/schedules",
+    "summary": "Listar agendamentos da campanha"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/campaigns/:id/schedules",
+    "summary": "Criar agendamento para campanha"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/campaigns/:id/schedules/:sid",
+    "summary": "Obter agendamento por ID"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/campaigns/:id/schedules/:sid",
+    "summary": "Atualizar agendamento"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/campaigns/:id/schedules/:sid",
+    "summary": "Cancelar agendamento"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/campaigns/:id/schedules/:sid/retry",
+    "summary": "Reenviar agendamento com falha"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/schedules",
+    "summary": "Criar agendamento"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/schedules",
+    "summary": "Listar agendamentos"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/schedules/:id",
+    "summary": "Obter agendamento por ID"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/schedules/:id",
+    "summary": "Atualizar agendamento"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/schedules/:id",
+    "summary": "Deletar agendamento"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/blacklist",
+    "summary": "Listar numeros bloqueados"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/blacklist",
+    "summary": "Adicionar numero a blacklist"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/blacklist/check/:phone",
+    "summary": "Verificar se numero esta na blacklist"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/blacklist/bulk",
+    "summary": "Adicionar numeros em massa a blacklist"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/blacklist/:id",
+    "summary": "Remover numero da blacklist"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/contacts",
+    "summary": ""
+  },
+  {
+    "method": "POST",
+    "path": "/v1/contacts",
+    "summary": "Criar contato"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/contacts/:id",
+    "summary": "Atualizar contato"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/contacts/:id",
+    "summary": "Deletar contato"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/contacts/:id",
+    "summary": ""
+  },
+  {
+    "method": "GET",
+    "path": "/v1/connections",
+    "summary": "Listar conexoes"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/connections/:id",
+    "summary": "Obter conexao por ID"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/groups",
+    "summary": "Listar grupos"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/groups/:id",
+    "summary": "Obter grupo por ID"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/stats/dashboard",
+    "summary": "Obter estatisticas do dashboard"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/stats/campaigns/:id",
+    "summary": "Obter estatisticas de uma campanha"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/access-list/:campaignId",
+    "summary": "Listar entradas da lista de acesso da campanha"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/access-list/:campaignId",
+    "summary": "Conceder acesso (adicionar a lista)"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/access-list/:campaignId/bulk",
+    "summary": "Conceder acesso em massa"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/access-list/:campaignId/check",
+    "summary": "Verificar se phone tem acesso ativo"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/access-list/:campaignId/renew",
+    "summary": "Renovar acesso (atualizar expires_at)"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/access-list/:campaignId/:phone",
+    "summary": "Revogar acesso por phone"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/access-list/:campaignId/stats",
+    "summary": "Estatisticas da lista de acesso da campanha"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/admin/users",
+    "summary": "Listar todos os usuarios"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/admin/users/:id",
+    "summary": "Obter usuario por ID"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/admin/users/:id",
+    "summary": "Atualizar usuario"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/admin/organizations",
+    "summary": "Listar todas as organizacoes"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/admin/organizations/:id",
+    "summary": "Obter organizacao por ID"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/admin/organizations/:id",
+    "summary": "Atualizar organizacao"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/admin/connections",
+    "summary": "Criar conexao para organizacao"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/admin/connections/:id",
+    "summary": "Deletar conexao"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/admin/groups",
+    "summary": "Listar todos os grupos (sem filtro de campanha)"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/admin/webhooks",
+    "summary": "Listar todos os webhooks"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/admin/webhooks",
+    "summary": "Criar webhook"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/admin/webhooks/:id",
+    "summary": "Obter webhook por ID"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/admin/webhooks/:id",
+    "summary": "Atualizar webhook"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/admin/webhooks/:id",
+    "summary": "Deletar webhook"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/admin/stats/global",
+    "summary": "Estatisticas globais do sistema"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/admin/stats/usage",
+    "summary": "Uso por organizacao"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/conversations",
+    "summary": ""
+  },
+  {
+    "method": "GET",
+    "path": "/v1/conversations/:id",
+    "summary": ""
+  },
+  {
+    "method": "POST",
+    "path": "/v1/conversations/:id/messages",
+    "summary": ""
+  },
+  {
+    "method": "GET",
+    "path": "/v1/conversations/:id/messages",
+    "summary": ""
+  }
+]

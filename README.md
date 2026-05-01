@@ -15,6 +15,104 @@ This repo is a **monorepo** (npm workspaces):
 
 See [packages/mcp-stdio/README.md](packages/mcp-stdio/README.md) for MCP setup snippets per client.
 
+---
+
+## ⚡ Setup automatizado (1 linha — peça pra IA fazer)
+
+Cole isso no seu **Claude Desktop / Claude Code / Cursor / Codex / VS Code**:
+
+```
+Configure o ZenHub MCP no meu cliente seguindo as instrucoes em
+https://github.com/zenhubpro/zenhub-cli/blob/main/AGENT.md
+```
+
+A IA le o [AGENT.md](AGENT.md), pergunta seu cliente + API key, edita o config file certo, e te avisa pra reiniciar o app. ~30 segundos.
+
+Se preferir fazer manual, pule pra [Setup manual por cliente](#setup-manual-por-cliente).
+
+---
+
+## Setup manual por cliente
+
+### Pre-requisitos
+
+1. Node.js 18+
+2. API key ZenHub (`agwpp_live_...`) — gere em https://www.zenhub.pro/settings/integrations
+
+### Claude Desktop
+
+`~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) ou `%APPDATA%\Claude\claude_desktop_config.json` (Windows):
+
+```json
+{
+  "mcpServers": {
+    "zenhub": {
+      "command": "npx",
+      "args": ["-y", "zenhub-mcp"],
+      "env": { "ZENHUB_API_KEY": "agwpp_live_..." }
+    }
+  }
+}
+```
+
+Reinicie o Claude Desktop.
+
+### Claude Code
+
+```bash
+claude mcp add zenhub --env ZENHUB_API_KEY=agwpp_live_... -- npx -y zenhub-mcp
+```
+
+### Codex CLI
+
+`~/.codex/config.toml`:
+
+```toml
+[mcp_servers.zenhub]
+command = "npx"
+args = ["-y", "zenhub-mcp"]
+env = { ZENHUB_API_KEY = "agwpp_live_..." }
+```
+
+### Cursor
+
+`.cursor/mcp.json` (projeto) ou `~/.cursor/mcp.json` (global):
+
+```json
+{
+  "mcpServers": {
+    "zenhub": {
+      "command": "npx",
+      "args": ["-y", "zenhub-mcp"],
+      "env": { "ZENHUB_API_KEY": "agwpp_live_..." }
+    }
+  }
+}
+```
+
+### VS Code (Copilot / Continue)
+
+`.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "zenhub": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "zenhub-mcp"],
+      "env": { "ZENHUB_API_KEY": "agwpp_live_..." }
+    }
+  }
+}
+```
+
+### Verificacao
+
+Pergunte na IA: *"Liste minhas campanhas via ZenHub MCP"*. A IA invoca `campaigns_list` e retorna seus dados.
+
+---
+
 ## Overview
 
 ```

@@ -1,0 +1,35 @@
+# ZenHub CLI / MCP
+
+> MCP (Model Context Protocol) server and CLI for managing WhatsApp campaigns, schedules, ZenChat conversations and contacts on the ZenHub platform. Published on npm as `zenhub-mcp` (stdio MCP server) and `zenhub-cli` (terminal CLI).
+
+## For AI agents configuring this MCP for a user
+
+Read the **"Instructions for AI agents"** section at the top of [README.md](https://github.com/zenhubpro/zenhub-cli/blob/main/README.md) — it's the first H2 in the file. It includes:
+
+- Step-by-step flow (identify client → get API key → locate config file → apply config → restart → validate)
+- Config file paths for every supported client (Claude Desktop on macOS/Windows/Linux, Claude Code, Cursor, Codex CLI, VS Code)
+- JSON and TOML snippets to insert
+- Troubleshooting table
+- Validation phrase to test the install
+
+## Most common config
+
+Client: Claude Desktop. File: `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows). Content:
+
+```json
+{
+  "mcpServers": {
+    "zenhub": {
+      "command": "npx",
+      "args": ["-y", "zenhub-mcp"],
+      "env": { "ZENHUB_API_KEY": "agwpp_live_..." }
+    }
+  }
+}
+```
+
+API keys are generated at https://www.zenhub.pro/settings/integrations.
+
+## Official docs
+
+https://docs.zenhub.pro

@@ -6,6 +6,22 @@ Built for humans **and** AI agents. Every CLI command supports `--json`. The MCP
 
 ---
 
+## 🖱️ One-click install for Claude Desktop
+
+The fastest path. Zero JSON, zero terminal.
+
+1. **[Download `zenhub-mcp.dxt`](https://github.com/zenhubpro/zenhub-cli/releases/latest/download/zenhub-mcp.dxt)** from the latest release.
+2. Open Claude Desktop and **drag the `.dxt` file** into the window (or Settings → Extensions → Install from file).
+3. Paste your **ZenHub API key** (`agwpp_live_...` — generate at https://www.zenhub.pro/settings/integrations) when prompted.
+4. Click **Install**.
+5. In any chat, ask: *"List my WhatsApp connections via ZenHub MCP"* — Claude calls `connections_list` and returns your data.
+
+That's it. The DXT bundles the MCP server and all dependencies — no `npm install`, no Node version juggling, no editing of `claude_desktop_config.json`.
+
+> **Other clients** (Claude Code, Cursor, Codex CLI, VS Code): keep reading — agent-driven setup below.
+
+---
+
 ## 🤖 Instructions for AI agents (read this first)
 
 > **You are an AI agent (Claude, Codex, Copilot, Cursor, etc) and the user shared this repository asking you to set up ZenHub. Follow the steps below exactly. Do not skip ahead.**

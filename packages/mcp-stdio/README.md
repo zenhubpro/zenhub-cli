@@ -1,4 +1,4 @@
-# zenhub-mcp
+# @zenhubpro/mcp
 
 MCP server (stdio) for ZenHub. Exposes 50+ tools spanning campaigns, schedules, groups, messages, ZenChat conversations, contacts, connections, stats, access-list, blacklist, and buyers ingestion.
 
@@ -7,9 +7,9 @@ Compatible with any MCP client that supports stdio transport: Claude Desktop, Cl
 ## Install
 
 ```bash
-npm install -g zenhub-mcp
+npm install -g @zenhubpro/mcp
 # or run on demand
-npx zenhub-mcp
+npx @zenhubpro/mcp
 ```
 
 Requires **Node 18+** and a ZenHub API key (`agwpp_live_*`).
@@ -33,7 +33,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
   "mcpServers": {
     "zenhub": {
       "command": "npx",
-      "args": ["-y", "zenhub-mcp"],
+      "args": ["-y", "@zenhubpro/mcp"],
       "env": { "ZENHUB_API_KEY": "agwpp_live_..." }
     }
   }
@@ -43,7 +43,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
 ### Claude Code
 
 ```bash
-claude mcp add zenhub -- npx -y zenhub-mcp
+claude mcp add zenhub -- npx -y @zenhubpro/mcp
 ```
 
 Or in `~/.claude.json`:
@@ -53,7 +53,7 @@ Or in `~/.claude.json`:
   "mcpServers": {
     "zenhub": {
       "command": "npx",
-      "args": ["-y", "zenhub-mcp"],
+      "args": ["-y", "@zenhubpro/mcp"],
       "env": { "ZENHUB_API_KEY": "agwpp_live_..." }
     }
   }
@@ -67,7 +67,7 @@ Edit `~/.codex/config.toml`:
 ```toml
 [mcp_servers.zenhub]
 command = "npx"
-args = ["-y", "zenhub-mcp"]
+args = ["-y", "@zenhubpro/mcp"]
 env = { ZENHUB_API_KEY = "agwpp_live_..." }
 ```
 
@@ -80,7 +80,7 @@ Edit `.cursor/mcp.json` (project) or `~/.cursor/mcp.json` (global):
   "mcpServers": {
     "zenhub": {
       "command": "npx",
-      "args": ["-y", "zenhub-mcp"],
+      "args": ["-y", "@zenhubpro/mcp"],
       "env": { "ZENHUB_API_KEY": "agwpp_live_..." }
     }
   }
@@ -97,7 +97,7 @@ Edit `.vscode/mcp.json`:
     "zenhub": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "zenhub-mcp"],
+      "args": ["-y", "@zenhubpro/mcp"],
       "env": { "ZENHUB_API_KEY": "agwpp_live_..." }
     }
   }
@@ -107,7 +107,7 @@ Edit `.vscode/mcp.json`:
 ## Smoke test
 
 ```bash
-echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | ZENHUB_API_KEY=$ZENHUB_API_KEY npx zenhub-mcp
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | ZENHUB_API_KEY=$ZENHUB_API_KEY npx @zenhubpro/mcp
 ```
 
 Should emit a JSON list of all available tools.

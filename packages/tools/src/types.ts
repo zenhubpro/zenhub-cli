@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { ZenHubClient } from '@zenhub/client';
+import type { ZenHubClient } from '@zenhubpro/client';
 
 export interface ToolDefinition<TInput extends z.ZodRawShape = z.ZodRawShape> {
   name: string;

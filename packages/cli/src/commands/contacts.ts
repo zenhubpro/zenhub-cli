@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { ZenHubClient } from '@zenhub/client';
+import { ZenHubClient } from '@zenhubpro/client';
 import { output, outputError, outputSuccess } from '../lib/output';
 
 export function registerContacts(program: Command, client: ZenHubClient) {

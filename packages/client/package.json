@@ -1,6 +1,7 @@
 {
-  "name": "@zenhub/client",
+  "name": "@zenhubpro/client",
   "version": "0.1.0",
+  "publishConfig": { "access": "public" },
   "description": "ZenHub HTTP client + auth (shared by CLI and MCP)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

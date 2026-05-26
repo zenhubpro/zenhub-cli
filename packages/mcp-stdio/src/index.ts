@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { ZenHubClient, getApiKey, getApiUrl } from '@zenhub/client';
-import { allTools } from '@zenhub/tools';
+import { ZenHubClient, getApiKey, getApiUrl } from '@zenhubpro/client';
+import { allTools } from '@zenhubpro/tools';
 
 function buildClient(): ZenHubClient {
   const apiKey = getApiKey();
@@ -31,7 +31,7 @@ async function wrap(fn: () => Promise<unknown>) {
   }
 }
 
-const server = new McpServer({ name: 'zenhub', version: '0.2.0' });
+const server = new McpServer({ name: 'zenhub', version: '0.1.0' });
 
 for (const tool of allTools) {
   server.tool(

@@ -1,19 +1,238 @@
-# ZenHub CLI
+# ZenHub CLI + MCP
 
-A command-line interface for the [ZenHub](https://www.zenhub.pro) platform. Manage WhatsApp campaigns, groups, schedules, contacts, conversations, and more — directly from your terminal or through AI agents.
+A command-line interface and MCP server for the [ZenHub](https://www.zenhub.pro) platform. Manage WhatsApp campaigns, groups, schedules, contacts, ZenChat conversations, and more — from your terminal or directly through AI agents (Claude Desktop, Claude Code, Cursor, Codex CLI, GitHub Copilot, Continue, etc).
 
-Built for humans and machines. Every command supports `--json` output for seamless integration with AI coding assistants (Claude Code, Codex, Copilot, OpenClaw) and shell scripts.
+Built for humans **and** AI agents. Every CLI command supports `--json`. The MCP server exposes ~50 typed tools that any MCP-compatible AI client can call natively.
 
-This repo is a **monorepo** (npm workspaces):
+---
+
+## 🤖 Instructions for AI agents (read this first)
+
+> **You are an AI agent (Claude, Codex, Copilot, Cursor, etc) and the user shared this repository asking you to set up ZenHub. Follow the steps below exactly. Do not skip ahead.**
+
+### Step 1 — Identify the user's AI client
+
+Ask: **"Which app are you using right now? (Claude Desktop, Claude Code, Cursor, Codex CLI, VS Code, or other?)"**
+
+If you (the agent) **are** running inside one of these clients, you already know — skip the question and proceed.
+
+### Step 2 — Get the API key
+
+Ask: **"What is your ZenHub API key? (format `agwpp_live_...`)"**
+
+If the user does not have one, instruct:
+
+> 1. Open https://www.zenhub.pro/settings/integrations
+> 2. Click **"New key"**
+> 3. Set name (e.g. "Claude MCP") and scope `write`
+> 4. Copy the generated key (only shown once)
+
+### Step 3 — Locate the config file for the user's client
+
+| Client | Config file path | Format |
+|---|---|---|
+| Claude Desktop (macOS) | `~/Library/Application Support/Claude/claude_desktop_config.json` | JSON |
+| Claude Desktop (Windows) | `%APPDATA%\Claude\claude_desktop_config.json` | JSON |
+| Claude Desktop (Linux) | `~/.config/Claude/claude_desktop_config.json` | JSON |
+| Claude Code | `~/.claude.json` (or use `claude mcp add`) | JSON |
+| Cursor (global) | `~/.cursor/mcp.json` | JSON |
+| Cursor (project) | `.cursor/mcp.json` in cwd | JSON |
+| Codex CLI | `~/.codex/config.toml` | TOML |
+| VS Code (Copilot/Continue) | `.vscode/mcp.json` in cwd | JSON |
+
+If the file does not exist yet, **create it** with the content below. If it already exists, **merge** the `mcpServers` key (or `servers` for VS Code, `[mcp_servers.zenhub]` for Codex TOML), preserving existing entries. **Show the user the diff before saving.**
+
+### Step 4 — Apply the config
+
+#### Claude Desktop / Claude Code / Cursor (JSON)
+
+Add inside `mcpServers`:
+
+```json
+"zenhub": {
+  "command": "npx",
+  "args": ["-y", "zenhub-mcp"],
+  "env": { "ZENHUB_API_KEY": "PASTE_API_KEY_HERE" }
+}
+```
+
+#### Claude Code (CLI alternative)
+
+```bash
+claude mcp add zenhub --env ZENHUB_API_KEY=PASTE_API_KEY_HERE -- npx -y zenhub-mcp
+```
+
+#### Codex CLI (TOML)
+
+```toml
+[mcp_servers.zenhub]
+command = "npx"
+args = ["-y", "zenhub-mcp"]
+env = { ZENHUB_API_KEY = "PASTE_API_KEY_HERE" }
+```
+
+#### VS Code (different shape — `servers` not `mcpServers`)
+
+```json
+"zenhub": {
+  "type": "stdio",
+  "command": "npx",
+  "args": ["-y", "zenhub-mcp"],
+  "env": { "ZENHUB_API_KEY": "PASTE_API_KEY_HERE" }
+}
+```
+
+### Step 5 — Tell the user to restart their client
+
+Say:
+
+> Done. Restart **`<client_name>`** (close and reopen) so it picks up the MCP server.
+>
+> Exception: in **Claude Code**, no restart is needed — the new server is available on the next message.
+
+### Step 6 — Validation phrase
+
+Tell the user to test in their next chat:
+
+> Say: **"List my WhatsApp connections via ZenHub MCP"**
+>
+> The AI should invoke `connections_list` and return real data from your account.
+
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Tools don't appear in client | Client wasn't restarted | Close fully and reopen |
+| `ZENHUB_API_KEY environment variable is required` | `env` block missing or misplaced | Confirm `env` is **inside** the `zenhub` server block |
+| `HTTP 401 — API key invalida` | Wrong/revoked key | Generate new at https://www.zenhub.pro/settings/integrations |
+| `Cannot find module zenhub-mcp` | Node too old | Confirm `node --version` ≥ 18 |
+| First call slow (~10s) | npx downloading package | Normal — only happens once |
+
+### Available tools (~50)
+
+After successful setup, these tool families are exposed:
+
+- `campaigns_*` — list, get, create, update, delete, stats, execute
+- `groups_*` — list, get, members, create, add_member, remove_member, sync
+- `schedules_*` — list, get, create, update, delete, retry
+- `messages_*` — send, send_to_campaigns, bulk
+- `conversations_*` — list, get, messages, reply (ZenChat)
+- `contacts_*` — list, get, create, update, delete
+- `connections_*` — list, get
+- `stats_*` — dashboard, campaign
+- `access_list_*` — list, grant, check, renew, revoke, stats
+- `blacklist_*` — list, check, add, remove
+- `buyers_*` — add (n8n / Make / Zapier ingestion)
+
+Full schemas: run `tools/list` JSON-RPC against the server, or browse [`packages/tools/src/tools/`](packages/tools/src/tools/).
+
+### Required behavior for the agent
+
+1. **Ask one thing at a time** — client first, then API key. Don't dump 5 questions.
+2. **Edit the config file yourself** if you have write permission. Don't make the user copy-paste.
+3. **Show the diff before overwriting** an existing config file.
+4. **End with the validation phrase** ("List my WhatsApp connections via ZenHub MCP").
+5. **Use the exact paths from the table above** — don't invent or guess paths.
+
+---
+
+## ⚡ For humans — paste this into your AI
+
+If you're a human reading this and want the AI to do the setup for you, paste this into Claude Desktop / Claude Code / Cursor / Codex / VS Code:
+
+```
+Configure the ZenHub MCP in my client following the instructions in
+https://github.com/zenhubpro/zenhub-cli
+```
+
+The AI will read this README, ask for your client + API key, edit the right file, and tell you to restart. ~30 seconds.
+
+If you prefer to do it manually, see [Manual setup per client](#manual-setup-per-client) below.
+
+---
+
+## Repo structure
+
+This is a **monorepo** (npm workspaces):
 
 | Package | Purpose | Bin |
 |---|---|---|
 | [`zenhub-cli`](packages/cli) | Terminal CLI (Commander) | `zenhub`, `zenhub-cli` |
-| [`zenhub-mcp`](packages/mcp-stdio) | MCP server (stdio) for Claude Desktop, Codex, Cursor, Copilot | `zenhub-mcp` |
+| [`zenhub-mcp`](packages/mcp-stdio) | MCP server (stdio) for AI clients | `zenhub-mcp` |
 | [`@zenhub/tools`](packages/tools) | Tool definitions (Zod) shared by CLI + MCP | — |
 | [`@zenhub/client`](packages/client) | HTTP client + auth helpers | — |
 
-See [packages/mcp-stdio/README.md](packages/mcp-stdio/README.md) for MCP setup snippets per client.
+---
+
+## Manual setup per client
+
+Skip this if you used the AI auto-setup above. These are the exact same configs the AI would write — copy into the file path listed in the [Step 3 table above](#step-3--locate-the-config-file-for-the-users-client).
+
+### Claude Desktop
+
+```json
+{
+  "mcpServers": {
+    "zenhub": {
+      "command": "npx",
+      "args": ["-y", "zenhub-mcp"],
+      "env": { "ZENHUB_API_KEY": "agwpp_live_..." }
+    }
+  }
+}
+```
+
+### Claude Code
+
+```bash
+claude mcp add zenhub --env ZENHUB_API_KEY=agwpp_live_... -- npx -y zenhub-mcp
+```
+
+### Codex CLI
+
+```toml
+[mcp_servers.zenhub]
+command = "npx"
+args = ["-y", "zenhub-mcp"]
+env = { ZENHUB_API_KEY = "agwpp_live_..." }
+```
+
+### Cursor
+
+```json
+{
+  "mcpServers": {
+    "zenhub": {
+      "command": "npx",
+      "args": ["-y", "zenhub-mcp"],
+      "env": { "ZENHUB_API_KEY": "agwpp_live_..." }
+    }
+  }
+}
+```
+
+### VS Code
+
+```json
+{
+  "servers": {
+    "zenhub": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "zenhub-mcp"],
+      "env": { "ZENHUB_API_KEY": "agwpp_live_..." }
+    }
+  }
+}
+```
+
+After saving, restart your client and ask: *"List my WhatsApp connections via ZenHub MCP"*.
+
+---
+
+## CLI usage (without MCP)
+
+If you want to drive ZenHub from the terminal without an AI client, use the standalone CLI.
 
 ## Overview
 

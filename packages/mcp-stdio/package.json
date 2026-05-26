@@ -1,12 +1,13 @@
 {
-  "name": "zenhub-mcp",
-  "version": "0.2.0",
+  "name": "@zenhubpro/mcp",
+  "version": "0.1.0",
   "description": "ZenHub MCP server (stdio) — works with Claude Desktop, Claude Code, Codex, Cursor, Copilot",
   "bin": {
     "zenhub-mcp": "./dist/index.js"
   },
   "main": "dist/index.js",
   "files": ["dist"],
+  "publishConfig": { "access": "public" },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "lint": "eslint src/",
@@ -15,8 +16,8 @@
   "keywords": ["mcp", "zenhub", "whatsapp", "claude", "codex", "cursor"],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
-    "@zenhub/client": "0.1.0",
-    "@zenhub/tools": "0.1.0",
+    "@zenhubpro/client": "0.1.0",
+    "@zenhubpro/tools": "0.1.0",
     "zod": "^3.23.0"
   },
   "engines": { "node": ">=18" },

@@ -51,7 +51,7 @@ Add inside `mcpServers`:
 ```json
 "zenhub": {
   "command": "npx",
-  "args": ["-y", "zenhub-mcp"],
+  "args": ["-y", "@zenhubpro/mcp"],
   "env": { "ZENHUB_API_KEY": "PASTE_API_KEY_HERE" }
 }
 ```
@@ -59,7 +59,7 @@ Add inside `mcpServers`:
 #### Claude Code (CLI alternative)
 
 ```bash
-claude mcp add zenhub --env ZENHUB_API_KEY=PASTE_API_KEY_HERE -- npx -y zenhub-mcp
+claude mcp add zenhub --env ZENHUB_API_KEY=PASTE_API_KEY_HERE -- npx -y @zenhubpro/mcp
 ```
 
 #### Codex CLI (TOML)
@@ -67,7 +67,7 @@ claude mcp add zenhub --env ZENHUB_API_KEY=PASTE_API_KEY_HERE -- npx -y zenhub-m
 ```toml
 [mcp_servers.zenhub]
 command = "npx"
-args = ["-y", "zenhub-mcp"]
+args = ["-y", "@zenhubpro/mcp"]
 env = { ZENHUB_API_KEY = "PASTE_API_KEY_HERE" }
 ```
 
@@ -77,7 +77,7 @@ env = { ZENHUB_API_KEY = "PASTE_API_KEY_HERE" }
 "zenhub": {
   "type": "stdio",
   "command": "npx",
-  "args": ["-y", "zenhub-mcp"],
+  "args": ["-y", "@zenhubpro/mcp"],
   "env": { "ZENHUB_API_KEY": "PASTE_API_KEY_HERE" }
 }
 ```
@@ -105,7 +105,7 @@ Tell the user to test in their next chat:
 | Tools don't appear in client | Client wasn't restarted | Close fully and reopen |
 | `ZENHUB_API_KEY environment variable is required` | `env` block missing or misplaced | Confirm `env` is **inside** the `zenhub` server block |
 | `HTTP 401 — API key invalida` | Wrong/revoked key | Generate new at https://www.zenhub.pro/settings/integrations |
-| `Cannot find module zenhub-mcp` | Node too old | Confirm `node --version` ≥ 18 |
+| `Cannot find module @zenhubpro/mcp` | Node too old | Confirm `node --version` ≥ 18 |
 | First call slow (~10s) | npx downloading package | Normal — only happens once |
 
 ### Available tools (~50)
@@ -157,10 +157,10 @@ This is a **monorepo** (npm workspaces):
 
 | Package | Purpose | Bin |
 |---|---|---|
-| [`zenhub-cli`](packages/cli) | Terminal CLI (Commander) | `zenhub`, `zenhub-cli` |
-| [`zenhub-mcp`](packages/mcp-stdio) | MCP server (stdio) for AI clients | `zenhub-mcp` |
-| [`@zenhub/tools`](packages/tools) | Tool definitions (Zod) shared by CLI + MCP | — |
-| [`@zenhub/client`](packages/client) | HTTP client + auth helpers | — |
+| [`@zenhubpro/cli`](packages/cli) | Terminal CLI (Commander) | `zenhub` |
+| [`@zenhubpro/mcp`](packages/mcp-stdio) | MCP server (stdio) for AI clients | `zenhub-mcp` |
+| [`@zenhubpro/tools`](packages/tools) | Tool definitions (Zod) shared by CLI + MCP | — |
+| [`@zenhubpro/client`](packages/client) | HTTP client + auth helpers | — |
 
 ---
 
@@ -175,7 +175,7 @@ Skip this if you used the AI auto-setup above. These are the exact same configs 
   "mcpServers": {
     "zenhub": {
       "command": "npx",
-      "args": ["-y", "zenhub-mcp"],
+      "args": ["-y", "@zenhubpro/mcp"],
       "env": { "ZENHUB_API_KEY": "agwpp_live_..." }
     }
   }
@@ -185,7 +185,7 @@ Skip this if you used the AI auto-setup above. These are the exact same configs 
 ### Claude Code
 
 ```bash
-claude mcp add zenhub --env ZENHUB_API_KEY=agwpp_live_... -- npx -y zenhub-mcp
+claude mcp add zenhub --env ZENHUB_API_KEY=agwpp_live_... -- npx -y @zenhubpro/mcp
 ```
 
 ### Codex CLI
@@ -193,7 +193,7 @@ claude mcp add zenhub --env ZENHUB_API_KEY=agwpp_live_... -- npx -y zenhub-mcp
 ```toml
 [mcp_servers.zenhub]
 command = "npx"
-args = ["-y", "zenhub-mcp"]
+args = ["-y", "@zenhubpro/mcp"]
 env = { ZENHUB_API_KEY = "agwpp_live_..." }
 ```
 
@@ -204,7 +204,7 @@ env = { ZENHUB_API_KEY = "agwpp_live_..." }
   "mcpServers": {
     "zenhub": {
       "command": "npx",
-      "args": ["-y", "zenhub-mcp"],
+      "args": ["-y", "@zenhubpro/mcp"],
       "env": { "ZENHUB_API_KEY": "agwpp_live_..." }
     }
   }
@@ -219,7 +219,7 @@ env = { ZENHUB_API_KEY = "agwpp_live_..." }
     "zenhub": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "zenhub-mcp"],
+      "args": ["-y", "@zenhubpro/mcp"],
       "env": { "ZENHUB_API_KEY": "agwpp_live_..." }
     }
   }
@@ -259,7 +259,7 @@ zenhub <command> <subcommand> [flags]
 
 ```bash
 # Install
-npm install -g zenhub-cli
+npm install -g @zenhubpro/cli
 
 # Authenticate (opens browser)
 zenhub login
@@ -275,7 +275,7 @@ zenhub stats dashboard
 ### npm (recommended)
 
 ```bash
-npm install -g zenhub-cli
+npm install -g @zenhubpro/cli
 ```
 
 ### From source

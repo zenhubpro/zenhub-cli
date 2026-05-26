@@ -1,6 +1,6 @@
 # ZenHub CLI / MCP
 
-> MCP (Model Context Protocol) server and CLI for managing WhatsApp campaigns, schedules, ZenChat conversations and contacts on the ZenHub platform. Published on npm as `zenhub-mcp` (stdio MCP server) and `zenhub-cli` (terminal CLI).
+> MCP (Model Context Protocol) server and CLI for managing WhatsApp campaigns, schedules, ZenChat conversations and contacts on the ZenHub platform. Published on npm as `@zenhubpro/mcp` (stdio MCP server) and `@zenhubpro/cli` (terminal CLI).
 
 ## For AI agents configuring this MCP for a user
 
@@ -21,7 +21,7 @@ Client: Claude Desktop. File: `~/Library/Application Support/Claude/claude_deskt
   "mcpServers": {
     "zenhub": {
       "command": "npx",
-      "args": ["-y", "zenhub-mcp"],
+      "args": ["-y", "@zenhubpro/mcp"],
       "env": { "ZENHUB_API_KEY": "agwpp_live_..." }
     }
   }

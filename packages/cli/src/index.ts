@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { ZenHubClient, getApiKey, getApiUrl } from '@zenhub/client';
+import { ZenHubClient, getApiKey, getApiUrl } from '@zenhubpro/client';
 import { setJsonMode } from './lib/output';
 import { registerAuth } from './commands/auth';
 import { registerCampaigns } from './commands/campaigns';
@@ -22,7 +22,7 @@ program
   .description(
     'ZenHub CLI — automate WhatsApp campaigns, schedules, groups, and ZenChat from terminal or AI agents',
   )
-  .version('0.2.0')
+  .version('0.1.0')
   .option('--json', 'Output raw JSON (for AI agents and scripts)')
   .hook('preAction', (thisCommand) => {
     const opts = thisCommand.optsWithGlobals();

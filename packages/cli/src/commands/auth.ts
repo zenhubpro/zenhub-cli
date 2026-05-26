@@ -4,7 +4,7 @@ import {
   saveCredentials,
   loadCredentials,
   clearCredentials,
-} from '@zenhub/client';
+} from '@zenhubpro/client';
 import { openBrowser } from '../lib/prompt';
 import { isJsonMode, output } from '../lib/output';
 

@@ -2,7 +2,7 @@
  * Codegen — generate Zod schemas + tool stubs from /api/docs-json.
  *
  * Usage:
- *   npm run gen --workspace @zenhub/tools
+ *   npm run gen --workspace @zenhubpro/tools
  *
  * Env:
  *   ZENHUB_OPENAPI_URL  — override OpenAPI source (default: prod /api/docs-json)

@@ -10,7 +10,7 @@
     "build": "tsc -b",
     "clean": "tsc -b --clean",
     "lint": "npm run lint --workspaces --if-present",
-    "gen:openapi": "npm run gen --workspace @zenhub/tools",
+    "gen:openapi": "npm run gen --workspace @zenhubpro/tools",
     "release": "changeset publish"
   },
   "devDependencies": {

@@ -15,19 +15,9 @@ import { registerConnections } from './commands/connections';
 import { registerStats } from './commands/stats';
 import { registerAccessList } from './commands/access-list';
 import { registerBlacklist } from './commands/blacklist';
-import updateNotifier from 'update-notifier';
+import { autoUpdate } from './lib/auto-update';
 
 const VERSION = '0.2.0';
-
-// Notify when a newer version is published to npm. Checks at most once a day
-// (cached, in a detached process — never blocks the command). Skipped in
-// --json mode so AI-agent output stays clean.
-if (!process.argv.includes('--json')) {
-  updateNotifier({
-    pkg: { name: '@zenhubpro/cli', version: VERSION },
-    updateCheckInterval: 1000 * 60 * 60 * 24,
-  }).notify({ isGlobal: true });
-}
 
 const program = new Command();
 
@@ -79,7 +69,12 @@ program.on('command:*', () => {
   program.help();
 });
 
-program.parseAsync(process.argv).catch((err) => {
-  console.error(`Error: ${err.message}`);
-  process.exit(1);
-});
+// Self-update (once/day) before running the command, then parse.
+autoUpdate(VERSION)
+  .catch(() => undefined)
+  .finally(() => {
+    program.parseAsync(process.argv).catch((err) => {
+      console.error(`Error: ${err.message}`);
+      process.exit(1);
+    });
+  });

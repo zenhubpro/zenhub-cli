@@ -16,7 +16,7 @@ import { registerAccessList } from './commands/access-list';
 import { registerBlacklist } from './commands/blacklist';
 import { autoUpdate } from './lib/auto-update';
 
-const VERSION = '0.3.0';
+const VERSION = '0.3.2';
 
 const program = new Command();
 

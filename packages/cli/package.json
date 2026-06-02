@@ -1,6 +1,6 @@
 {
   "name": "@zenhubpro/cli",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "description": "ZenHub CLI — automate WhatsApp campaigns, schedules, groups, and ZenChat from terminal or AI agents",
   "bin": {
     "zenhub": "./dist/index.js"

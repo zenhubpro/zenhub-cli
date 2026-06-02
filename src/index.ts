@@ -15,13 +15,26 @@ import { registerConnections } from './commands/connections';
 import { registerStats } from './commands/stats';
 import { registerAccessList } from './commands/access-list';
 import { registerBlacklist } from './commands/blacklist';
+import updateNotifier from 'update-notifier';
+
+const VERSION = '0.2.0';
+
+// Notify when a newer version is published to npm. Checks at most once a day
+// (cached, in a detached process — never blocks the command). Skipped in
+// --json mode so AI-agent output stays clean.
+if (!process.argv.includes('--json')) {
+  updateNotifier({
+    pkg: { name: '@zenhubpro/cli', version: VERSION },
+    updateCheckInterval: 1000 * 60 * 60 * 24,
+  }).notify({ isGlobal: true });
+}
 
 const program = new Command();
 
 program
   .name('zenhub')
   .description('ZenHub CLI — automate WhatsApp campaigns, schedules, groups, and ZenChat from the terminal or AI agents')
-  .version('0.1.0')
+  .version(VERSION)
   .option('--json', 'Output raw JSON (for AI agents and scripts)')
   .hook('preAction', (thisCommand) => {
     const opts = thisCommand.optsWithGlobals();

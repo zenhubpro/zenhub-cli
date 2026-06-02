@@ -14,6 +14,9 @@ import { registerConnections } from './commands/connections';
 import { registerStats } from './commands/stats';
 import { registerAccessList } from './commands/access-list';
 import { registerBlacklist } from './commands/blacklist';
+import { autoUpdate } from './lib/auto-update';
+
+const VERSION = '0.3.0';
 
 const program = new Command();
 
@@ -22,7 +25,7 @@ program
   .description(
     'ZenHub CLI — automate WhatsApp campaigns, schedules, groups, and ZenChat from terminal or AI agents',
   )
-  .version('0.1.0')
+  .version(VERSION)
   .option('--json', 'Output raw JSON (for AI agents and scripts)')
   .hook('preAction', (thisCommand) => {
     const opts = thisCommand.optsWithGlobals();
@@ -78,7 +81,12 @@ program.on('command:*', () => {
   program.help();
 });
 
-program.parseAsync(process.argv).catch((err) => {
-  console.error(`Error: ${err.message}`);
-  process.exit(1);
-});
+// Self-update (once/day) before running the command, then parse.
+autoUpdate(VERSION)
+  .catch(() => undefined)
+  .finally(() => {
+    program.parseAsync(process.argv).catch((err) => {
+      console.error(`Error: ${err.message}`);
+      process.exit(1);
+    });
+  });

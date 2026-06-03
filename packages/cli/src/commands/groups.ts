@@ -133,4 +133,24 @@ export function registerGroups(program: Command, client: ZenHubClient) {
       if (!res.success) return outputError(res.error!);
       outputSuccess('Group unlock scheduled', res.data);
     });
+
+  cmd
+    .command('import <campaignId>')
+    .description('Import existing groups into a campaign')
+    .requiredOption('-g, --groups <ids>', 'Comma-separated group IDs')
+    .action(async (campaignId, opts) => {
+      const group_ids = opts.groups.split(',').map((s: string) => s.trim());
+      const res = await client.post(`/v1/campaigns/${campaignId}/groups/import`, { group_ids });
+      if (!res.success) return outputError(res.error!);
+      outputSuccess(`${group_ids.length} group(s) imported`, res.data);
+    });
+
+  cmd
+    .command('remove-from-campaign <campaignId> <groupId>')
+    .description('Remove a group from a campaign')
+    .action(async (campaignId, groupId) => {
+      const res = await client.del(`/v1/campaigns/${campaignId}/groups/${groupId}`);
+      if (!res.success) return outputError(res.error!);
+      outputSuccess('Group removed from campaign');
+    });
 }

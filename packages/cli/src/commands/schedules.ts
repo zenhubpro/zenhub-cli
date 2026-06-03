@@ -146,4 +146,40 @@ export function registerSchedules(program: Command, client: ZenHubClient) {
       if (!res.success) return outputError(res.error!);
       outputSuccess('Schedule retry queued', res.data);
     });
+
+  cmd
+    .command('pause <campaignId> <scheduleId>')
+    .description('Pause a schedule')
+    .action(async (campaignId, scheduleId) => {
+      const res = await client.post(`/v1/campaigns/${campaignId}/schedules/${scheduleId}/pause`);
+      if (!res.success) return outputError(res.error!);
+      outputSuccess('Schedule paused', res.data);
+    });
+
+  cmd
+    .command('resume <campaignId> <scheduleId>')
+    .description('Resume a schedule')
+    .action(async (campaignId, scheduleId) => {
+      const res = await client.post(`/v1/campaigns/${campaignId}/schedules/${scheduleId}/resume`);
+      if (!res.success) return outputError(res.error!);
+      outputSuccess('Schedule resumed', res.data);
+    });
+
+  cmd
+    .command('cancel <campaignId> <scheduleId>')
+    .description('Cancel a schedule')
+    .action(async (campaignId, scheduleId) => {
+      const res = await client.post(`/v1/campaigns/${campaignId}/schedules/${scheduleId}/cancel`);
+      if (!res.success) return outputError(res.error!);
+      outputSuccess('Schedule cancelled', res.data);
+    });
+
+  cmd
+    .command('execute-now <campaignId> <scheduleId>')
+    .description('Execute a schedule immediately')
+    .action(async (campaignId, scheduleId) => {
+      const res = await client.post(`/v1/campaigns/${campaignId}/schedules/${scheduleId}/execute-now`);
+      if (!res.success) return outputError(res.error!);
+      outputSuccess('Schedule execution started', res.data);
+    });
 }

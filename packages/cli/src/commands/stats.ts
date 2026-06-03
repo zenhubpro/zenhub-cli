@@ -22,4 +22,14 @@ export function registerStats(program: Command, client: ZenHubClient) {
       if (!res.success) return outputError(res.error!);
       output(res.data);
     });
+
+  cmd
+    .command('member-growth')
+    .description('Get member growth over time')
+    .option('--days <number>', 'Number of days')
+    .action(async (opts) => {
+      const res = await client.get('/v1/stats/member-growth', { days: opts.days });
+      if (!res.success) return outputError(res.error!);
+      output(res.data);
+    });
 }

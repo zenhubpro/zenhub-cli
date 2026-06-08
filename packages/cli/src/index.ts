@@ -23,7 +23,7 @@ import { registerEnrollees } from './commands/enrollees';
 import { registerZenchat } from './commands/zenchat';
 import { autoUpdate } from './lib/auto-update';
 
-const VERSION = '0.4.0';
+const VERSION = '0.4.1';
 
 const program = new Command();
 

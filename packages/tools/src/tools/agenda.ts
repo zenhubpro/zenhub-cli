@@ -9,7 +9,7 @@ export const agendaTools = [
     category: CAT,
     description: 'Lista os calendarios de agenda da organizacao.',
     schema: {},
-    handler: (c) => c.get('/zenchat/agenda/calendars'),
+    handler: (c) => c.get('/v1/agenda/calendars'),
   }),
   defineTool({
     name: 'agenda_slots',
@@ -22,7 +22,7 @@ export const agendaTools = [
       end: z.string().describe('Fim do intervalo (ISO 8601)'),
       user_id: z.string().optional().describe('Filtra slots de um usuario/agente especifico'),
     },
-    handler: (c, args) => c.get('/zenchat/agenda/slots', args),
+    handler: (c, args) => c.get('/v1/agenda/slots', args),
   }),
   defineTool({
     name: 'agenda_appointments_list',
@@ -35,7 +35,7 @@ export const agendaTools = [
       user_id: z.string().optional().describe('Filtra por usuario/agente responsavel'),
       calendar_id: z.string().optional().describe('Filtra por calendario'),
     },
-    handler: (c, args) => c.get('/zenchat/agenda/appointments', args),
+    handler: (c, args) => c.get('/v1/agenda/appointments', args),
   }),
   defineTool({
     name: 'agenda_appointment_create',
@@ -59,7 +59,7 @@ export const agendaTools = [
       assignee: z.string().optional().describe('ID do usuario/agente responsavel'),
       notes: z.string().optional().describe('Observacoes do agendamento'),
     },
-    handler: (c, args) => c.post('/zenchat/agenda/appointments', args),
+    handler: (c, args) => c.post('/v1/agenda/appointments', args),
   }),
   defineTool({
     name: 'agenda_appointment_cancel',
@@ -69,7 +69,7 @@ export const agendaTools = [
       id: z.string().describe('ID do agendamento'),
       reason: z.string().optional().describe('Motivo do cancelamento'),
     },
-    handler: (c, { id, ...body }) => c.post(`/zenchat/agenda/appointments/${id}/cancel`, body),
+    handler: (c, { id, ...body }) => c.post(`/v1/agenda/appointments/${id}/cancel`, body),
   }),
   defineTool({
     name: 'agenda_blocks_list',
@@ -79,7 +79,7 @@ export const agendaTools = [
       calendar_id: z.string().optional().describe('Filtra por calendario'),
       user_id: z.string().optional().describe('Filtra por usuario/agente'),
     },
-    handler: (c, args) => c.get('/zenchat/agenda/blocks', args),
+    handler: (c, args) => c.get('/v1/agenda/blocks', args),
   }),
   defineTool({
     name: 'agenda_block_create',
@@ -92,6 +92,6 @@ export const agendaTools = [
       user_id: z.string().optional().describe('Usuario/agente do bloqueio'),
       title: z.string().optional().describe('Titulo/motivo do bloqueio'),
     },
-    handler: (c, args) => c.post('/zenchat/agenda/blocks', args),
+    handler: (c, args) => c.post('/v1/agenda/blocks', args),
   }),
 ];

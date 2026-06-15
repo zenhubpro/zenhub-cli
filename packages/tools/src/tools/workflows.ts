@@ -9,7 +9,7 @@ export const workflowsTools = [
     category: CAT,
     description: 'Lista os workflows (automacoes) configurados na organizacao.',
     schema: {},
-    handler: (c) => c.get('/zenchat/workflows'),
+    handler: (c) => c.get('/v1/workflows'),
   }),
   defineTool({
     name: 'workflow_run',
@@ -20,6 +20,6 @@ export const workflowsTools = [
       id: z.string().describe('ID do workflow'),
       input: z.record(z.unknown()).optional().describe('Payload de entrada para a execucao'),
     },
-    handler: (c, { id, input }) => c.post(`/zenchat/workflows/${id}/run`, input ?? {}),
+    handler: (c, { id, input }) => c.post(`/v1/workflows/${id}/run`, input ?? {}),
   }),
 ];

@@ -54,4 +54,12 @@ export const contactsTools = [
     schema: { id: z.string() },
     handler: (c, { id }) => c.del(`/v1/contacts/${id}`),
   }),
+  defineTool({
+    name: 'contact_conversations',
+    category: CAT,
+    description:
+      'List the support ticket history (all conversations, across every channel) of a contact, newest first. In ZenChat a "ticket" is a conversation.',
+    schema: { id: z.string().describe('Contact ID') },
+    handler: (c, { id }) => c.get(`/v1/contacts/${id}/conversations`),
+  }),
 ];

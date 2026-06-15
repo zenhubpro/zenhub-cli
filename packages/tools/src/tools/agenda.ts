@@ -48,16 +48,17 @@ export const agendaTools = [
       title: z.string().describe('Titulo do agendamento'),
       end_at: z.string().optional().describe('Fim do agendamento (ISO 8601)'),
       contact_id: z.string().optional().describe('ID de um contato existente'),
-      contato: z
-        .object({
-          name: z.string().optional(),
-          phone: z.string().optional(),
-          email: z.string().optional(),
-        })
+      name: z.string().optional().describe('Nome do contato (quando nao houver contact_id)'),
+      phone: z
+        .string()
         .optional()
-        .describe('Dados de contato (quando nao houver contact_id)'),
-      assignee: z.string().optional().describe('ID do usuario/agente responsavel'),
-      notes: z.string().optional().describe('Observacoes do agendamento'),
+        .describe('Telefone do contato (resolve/cria por telefone)'),
+      email: z.string().optional().describe('E-mail do contato'),
+      assigned_user_id: z
+        .string()
+        .optional()
+        .describe('ID do atendente responsavel (vazio = round-robin)'),
+      description: z.string().optional().describe('Observacoes/descricao'),
     },
     handler: (c, args) => c.post('/v1/agenda/appointments', args),
   }),

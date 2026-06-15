@@ -11,6 +11,7 @@ import { blacklistTools } from './tools/blacklist';
 import { buyersTools } from './tools/buyers';
 import { agendaTools } from './tools/agenda';
 import { workflowsTools } from './tools/workflows';
+import { leadsTools } from './tools/leads';
 import type { AnyTool } from './types';
 
 export * from './types';
@@ -29,6 +30,7 @@ export const allTools: AnyTool[] = [
   ...buyersTools,
   ...agendaTools,
   ...workflowsTools,
+  ...leadsTools,
 ];
 
 export function toolByName(name: string): AnyTool | undefined {

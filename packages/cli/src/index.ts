@@ -14,6 +14,7 @@ import { registerConnections } from './commands/connections';
 import { registerStats } from './commands/stats';
 import { registerAccessList } from './commands/access-list';
 import { registerBlacklist } from './commands/blacklist';
+import { registerMembers } from './commands/members';
 import { registerCommunity } from './commands/community';
 import { registerPolls } from './commands/polls';
 import { registerVerification } from './commands/verification';
@@ -81,6 +82,7 @@ registerRecurring(program, client);
 registerAutoresponders(program, client);
 registerEnrollees(program, client);
 registerZenchat(program, client);
+registerMembers(program, client);
 
 // MCP launcher — `zenhub mcp` runs the stdio MCP server
 program

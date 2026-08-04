@@ -1,4 +1,5 @@
 import { Command } from 'commander';
+import { readFileSync } from 'fs';
 import { ZenHubClient } from '@zenhubpro/client';
 import { output, outputError, outputSuccess } from '../lib/output';
 
@@ -70,5 +71,33 @@ export function registerAccessList(program: Command, client: ZenHubClient) {
       const res = await client.get(`/v1/access-list/${campaignId}/stats`);
       if (!res.success) return outputError(res.error!);
       output(res.data);
+    });
+
+  cmd
+    .command('bulk <campaignId>')
+    .description('Grant access to multiple phone numbers at once')
+    .option('--file <path>', 'File with one entry per line: "phone,name,expires_at"')
+    .option('--expires <date>', 'Expiration date (ISO 8601) applied to all entries without their own')
+    .action(async (campaignId, opts) => {
+      if (!opts.file) {
+        return outputError('--file is required (one entry per line: "phone,name,expires_at")');
+      }
+
+      const entries = readFileSync(opts.file, 'utf-8')
+        .split('\n')
+        .map((l) => l.trim())
+        .filter(Boolean)
+        .map((line) => {
+          const [phone, name, expiresAt] = line.split(',').map((s) => s.trim());
+          return { phone, name: name || undefined, expires_at: expiresAt || opts.expires };
+        });
+
+      if (entries.length === 0) {
+        return outputError('No entries found in file');
+      }
+
+      const res = await client.post(`/v1/access-list/${campaignId}/bulk`, { entries });
+      if (!res.success) return outputError(res.error!);
+      outputSuccess(`${entries.length} access grant(s) submitted`, res.data);
     });
 }

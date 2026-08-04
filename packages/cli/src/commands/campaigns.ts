@@ -39,11 +39,13 @@ export function registerCampaigns(program: Command, client: ZenHubClient) {
     .option('--connections <ids>', 'Comma-separated selected connection UUIDs')
     .option('--access-list', 'Enable access list (whitelist)')
     .option('--max-open-groups <number>', 'Maximum number of open groups')
+    .option('--type <type>', 'Campaign type: standard or webinar', 'standard')
     .action(async (opts) => {
       const body: Record<string, any> = {
         name: opts.name,
       };
 
+      if (opts.type && opts.type !== 'standard') body.campaign_type = opts.type;
       if (opts.description) body.description = opts.description;
       if (opts.connection) body.primary_connection_id = opts.connection;
       if (opts.distributionMode) body.distribution_mode = opts.distributionMode;
@@ -120,5 +122,71 @@ export function registerCampaigns(program: Command, client: ZenHubClient) {
       const res = await client.post(`/v1/campaigns/${id}/execute`);
       if (!res.success) return outputError(res.error!);
       outputSuccess('Campaign execution started', res.data);
+    });
+
+  cmd
+    .command('shortlinks <id>')
+    .description('Get shortlink click summary for a campaign')
+    .option('--from <date>', 'Start date (ISO 8601)')
+    .option('--to <date>', 'End date (ISO 8601)')
+    .action(async (id, opts) => {
+      const res = await client.get(`/v1/campaigns/${id}/shortlinks/summary`, {
+        from: opts.from,
+        to: opts.to,
+      });
+      if (!res.success) return outputError(res.error!);
+      output(res.data);
+    });
+
+  cmd
+    .command('execution-logs <id>')
+    .description('Get execution logs for a campaign')
+    .option('-p, --page <number>', 'Page number', '1')
+    .option('-l, --per-page <number>', 'Results per page', '20')
+    .action(async (id, opts) => {
+      const res = await client.get(`/v1/campaigns/${id}/execution-logs`, {
+        page: opts.page,
+        per_page: opts.perPage,
+      });
+      if (!res.success) return outputError(res.error!);
+      output(res.data);
+    });
+
+  cmd
+    .command('execution-stats <id>')
+    .description('Get execution statistics for a campaign')
+    .action(async (id) => {
+      const res = await client.get(`/v1/campaigns/${id}/execution-stats`);
+      if (!res.success) return outputError(res.error!);
+      output(res.data);
+    });
+
+  const tracking = cmd.command('tracking').description('Attribution tracking for a campaign');
+
+  tracking
+    .command('summary <id>')
+    .description('Get tracking/attribution summary for a campaign')
+    .action(async (id) => {
+      const res = await client.get(`/v1/campaigns/${id}/tracking/summary`);
+      if (!res.success) return outputError(res.error!);
+      output(res.data);
+    });
+
+  tracking
+    .command('people <id>')
+    .description('List tracked people for a campaign')
+    .option('-q, --search <term>', 'Search by phone or UTM params')
+    .option('--presence <status>', 'Filter by presence: all, joined, not_joined, active, left')
+    .option('-p, --page <number>', 'Page number', '1')
+    .option('-l, --per-page <number>', 'Results per page', '20')
+    .action(async (id, opts) => {
+      const res = await client.get(`/v1/campaigns/${id}/tracking/people`, {
+        search: opts.search,
+        presence: opts.presence,
+        page: opts.page,
+        per_page: opts.perPage,
+      });
+      if (!res.success) return outputError(res.error!);
+      output(res.data);
     });
 }

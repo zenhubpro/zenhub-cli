@@ -1,6 +1,30 @@
+import { readFileSync } from 'fs';
 import { Command } from 'commander';
 import { ZenHubClient } from '@zenhubpro/client';
 import { output, outputError, outputSuccess } from '../lib/output';
+
+// Parse a CSV file into schedule objects. Header row defines keys. Multi-value
+// fields (group_ids, poll_options) use `|` as separator to avoid clashing with
+// the CSV comma. Empty cells are skipped.
+function parseSchedulesCsv(text: string): Record<string, any>[] {
+  const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',').map((h) => h.trim());
+  const MULTI = new Set(['group_ids', 'poll_options']);
+  const NUM = new Set(['delay_between_groups']);
+  return lines.slice(1).map((line) => {
+    const cells = line.split(',');
+    const row: Record<string, any> = {};
+    headers.forEach((key, i) => {
+      const raw = (cells[i] ?? '').trim();
+      if (!raw) return;
+      if (MULTI.has(key)) row[key] = raw.split('|').map((v) => v.trim()).filter(Boolean);
+      else if (NUM.has(key)) row[key] = Number(raw);
+      else row[key] = raw;
+    });
+    return row;
+  });
+}
 
 const EXECUTION_TYPES = [
   'text', 'image', 'video', 'audio', 'document', 'poll',
@@ -145,5 +169,67 @@ export function registerSchedules(program: Command, client: ZenHubClient) {
       const res = await client.post(`/v1/campaigns/${opts.campaign}/schedules/${scheduleId}/retry`);
       if (!res.success) return outputError(res.error!);
       outputSuccess('Schedule retry queued', res.data);
+    });
+
+  cmd
+    .command('pause <campaignId> <scheduleId>')
+    .description('Pause a schedule')
+    .action(async (campaignId, scheduleId) => {
+      const res = await client.post(`/v1/campaigns/${campaignId}/schedules/${scheduleId}/pause`);
+      if (!res.success) return outputError(res.error!);
+      outputSuccess('Schedule paused', res.data);
+    });
+
+  cmd
+    .command('resume <campaignId> <scheduleId>')
+    .description('Resume a schedule')
+    .action(async (campaignId, scheduleId) => {
+      const res = await client.post(`/v1/campaigns/${campaignId}/schedules/${scheduleId}/resume`);
+      if (!res.success) return outputError(res.error!);
+      outputSuccess('Schedule resumed', res.data);
+    });
+
+  cmd
+    .command('cancel <campaignId> <scheduleId>')
+    .description('Cancel a schedule')
+    .action(async (campaignId, scheduleId) => {
+      const res = await client.post(`/v1/campaigns/${campaignId}/schedules/${scheduleId}/cancel`);
+      if (!res.success) return outputError(res.error!);
+      outputSuccess('Schedule cancelled', res.data);
+    });
+
+  cmd
+    .command('execute-now <campaignId> <scheduleId>')
+    .description('Execute a schedule immediately')
+    .action(async (campaignId, scheduleId) => {
+      const res = await client.post(`/v1/campaigns/${campaignId}/schedules/${scheduleId}/execute-now`);
+      if (!res.success) return outputError(res.error!);
+      outputSuccess('Schedule execution started', res.data);
+    });
+
+  cmd
+    .command('import')
+    .description('Bulk-create schedules from a CSV or JSON file (one row/item per schedule)')
+    .requiredOption('-c, --campaign <id>', 'Campaign ID')
+    .requiredOption('-f, --file <path>', 'Path to .csv or .json file')
+    .action(async (opts) => {
+      let schedules: Record<string, any>[];
+      try {
+        const text = readFileSync(opts.file, 'utf-8');
+        if (opts.file.toLowerCase().endsWith('.json')) {
+          const parsed = JSON.parse(text);
+          schedules = Array.isArray(parsed) ? parsed : parsed.schedules;
+        } else {
+          schedules = parseSchedulesCsv(text);
+        }
+      } catch (e: any) {
+        return outputError(`Failed to read/parse file: ${e.message}`);
+      }
+      if (!Array.isArray(schedules) || schedules.length === 0) {
+        return outputError('No schedules found in file');
+      }
+      const res = await client.post(`/v1/campaigns/${opts.campaign}/schedules/import`, { schedules });
+      if (!res.success) return outputError(res.error!);
+      outputSuccess(`Imported ${schedules.length} schedule(s)`, res.data);
     });
 }

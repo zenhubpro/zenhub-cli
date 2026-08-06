@@ -1,13 +1,17 @@
 {
   "name": "@zenhubpro/cli",
-  "version": "0.3.1",
+  "version": "0.5.0",
   "description": "ZenHub CLI — automate WhatsApp campaigns, schedules, groups, and ZenChat from terminal or AI agents",
   "bin": {
     "zenhub": "./dist/index.js"
   },
   "main": "dist/index.js",
-  "files": ["dist"],
-  "publishConfig": { "access": "public" },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "ts-node src/index.ts",
@@ -15,7 +19,14 @@
     "lint": "eslint src/",
     "prepublishOnly": "npm run build"
   },
-  "keywords": ["zenhub", "whatsapp", "cli", "automation", "ai", "agent"],
+  "keywords": [
+    "zenhub",
+    "whatsapp",
+    "cli",
+    "automation",
+    "ai",
+    "agent"
+  ],
   "dependencies": {
     "@zenhubpro/client": "0.1.0",
     "@zenhubpro/tools": "0.1.0",
@@ -24,6 +35,8 @@
   "devDependencies": {
     "ts-node": "^10.9.0"
   },
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "license": "MIT"
 }

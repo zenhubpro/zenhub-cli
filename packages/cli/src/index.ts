@@ -15,12 +15,17 @@ import { registerStats } from './commands/stats';
 import { registerAccessList } from './commands/access-list';
 import { registerBlacklist } from './commands/blacklist';
 import { registerMembers } from './commands/members';
+import { registerCommunity } from './commands/community';
 import { registerWebinar } from './commands/webinar';
 import { registerPolls } from './commands/polls';
-import { registerZenChat } from './commands/zenchat';
+import { registerVerification } from './commands/verification';
+import { registerRecurring } from './commands/recurring';
+import { registerAutoresponders } from './commands/autoresponders';
+import { registerEnrollees } from './commands/enrollees';
+import { registerZenchat } from './commands/zenchat';
 import { autoUpdate } from './lib/auto-update';
 
-const VERSION = '0.3.1';
+const VERSION = '0.5.0';
 
 const program = new Command();
 
@@ -72,9 +77,14 @@ registerStats(program, client);
 registerAccessList(program, client);
 registerBlacklist(program, client);
 registerMembers(program, client);
+registerCommunity(program, client);
 registerWebinar(program, client);
 registerPolls(program, client);
-registerZenChat(program, client);
+registerVerification(program, client);
+registerRecurring(program, client);
+registerAutoresponders(program, client);
+registerEnrollees(program, client);
+registerZenchat(program, client);
 
 // MCP launcher — `zenhub mcp` runs the stdio MCP server
 program

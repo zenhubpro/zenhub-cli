@@ -1,10 +1,10 @@
 import { execSync, execFileSync } from 'child_process';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { homedir } from 'os';
-import { join } from 'path';
+import { dirname, join } from 'path';
 
 const PKG = '@zenhubpro/cli';
-const CHECK_INTERVAL_MS = 1000 * 60 * 60 * 24; // once per day
+const CHECK_INTERVAL_MS = 1000 * 60 * 60; // once per hour
 const CACHE_DIR = join(homedir(), '.zenhub');
 const CACHE_FILE = join(CACHE_DIR, 'update-check.json');
 
@@ -76,10 +76,21 @@ export async function autoUpdate(currentVersion: string): Promise<void> {
 
   process.stderr.write(`\n  Atualizando ZenHub CLI ${currentVersion} → ${latest}...\n`);
   try {
-    execSync(`npm install -g ${PKG}@latest`, { stdio: 'ignore', timeout: 120000 });
-  } catch {
+    // Resolve npm next to the running node binary so this works under nvm/fnm
+    // (where npm may not be on the minimal PATH that execSync's shell sees).
+    const nodeDir = dirname(process.execPath);
+    const npmBin = existsSync(join(nodeDir, 'npm')) ? `"${join(nodeDir, 'npm')}"` : 'npm';
+    execSync(`${npmBin} install -g ${PKG}@latest --no-fund --no-audit`, {
+      stdio: 'pipe',
+      timeout: 120000,
+      env: { ...process.env, PATH: `${nodeDir}:${process.env.PATH ?? ''}` },
+    });
+  } catch (err) {
+    const stderr = (err as { stderr?: Buffer }).stderr?.toString().trim();
+    const reason = stderr ? stderr.split('\n').filter(Boolean).pop() : (err as Error).message;
     process.stderr.write(
-      `  Não foi possível atualizar automaticamente. Rode: npm i -g ${PKG}@latest\n\n`,
+      `  Não foi possível atualizar automaticamente${reason ? ` (${reason})` : ''}.\n` +
+        `  Rode: npm i -g ${PKG}@latest\n\n`,
     );
     return;
   }
